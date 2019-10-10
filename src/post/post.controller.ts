@@ -21,6 +21,14 @@ export class PostController {
             return err;
         }
     }
+    @Get(':param/:searchValue')
+    async findBy(@Param() param): Promise<PostEntity[]> {
+        try {
+            return await this.postService.findBy({ param: param.param, searchValue: param.searchValue });
+        } catch (err) {
+            return err;
+        }
+    }
     @Post()
     async addPost(@Body() body: PostEntity) {
         return await this.postService.addPost(body);

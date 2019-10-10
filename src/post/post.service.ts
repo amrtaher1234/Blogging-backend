@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from './post.entity';
 import { Repository } from 'typeorm';
-import { IPost } from './models/postModel';
 
 @Injectable()
 export class PostService {
@@ -20,6 +19,17 @@ export class PostService {
     async findById(id): Promise<PostEntity> {
         try {
             return await this.postRepository.findOne(id);
+        } catch (err) {
+            return err;
+        }
+    }
+    async findBy(data): Promise<PostEntity[]> {
+        try {
+            Logger.log(data, 'data from ');
+            const t = this.postRepository
+                .createQueryBuilder('post')
+                .where(`post.${data.param} like :searchValue`, { searchValue: `%${data.searchValue}%` });
+            return t.getMany();
         } catch (err) {
             return err;
         }
